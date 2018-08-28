@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import io from 'socket.io';
+import io from 'socket.io-client';
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +13,10 @@ class App extends Component {
 
   componentWillMount() {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    this.socket = io.connect(protocol + '://' + document.domain + ':' + window.location.port, {
+    const port = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+      ? 3001
+      : window.location.port;
+    this.socket = io.connect(protocol + '://' + document.domain + ':' + port, {
       transports: ['websocket'],
     });
     this.socket.on('echo', this.onEcho);
@@ -33,16 +36,19 @@ class App extends Component {
         <div className="input">
           <form>
             <textarea
+              cols={80}
+              rows={5}
               placeholder="Send a message to the server..."
               value={this.state.value}
               onChange={e => this.setState({value: e.target.value})}
             />
+            <br/>
             <button type="button" onClick={this.send}>Send</button>
           </form>
         </div>
-        <p id="response">
+        <pre id="response">
           {this.state.echo}
-        </p>
+        </pre>
       </div>
     );
   }
