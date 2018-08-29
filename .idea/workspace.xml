@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7cf53e29-05a5-468c-a60b-f15744066793" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ui/.gitignore" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -59,11 +59,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
+            <state relative-caret-position="120">
+              <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -73,11 +73,11 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ui/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="2" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="2" />
+            <state relative-caret-position="120">
+              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
             </state>
           </provider>
         </entry>
@@ -107,8 +107,8 @@
         <option value="$PROJECT_DIR$/ui/src/index.js" />
         <option value="$PROJECT_DIR$/server.py" />
         <option value="$PROJECT_DIR$/ui/src/App.js" />
-        <option value="$PROJECT_DIR$/ui/.gitignore" />
         <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/ui/.gitignore" />
       </list>
     </option>
   </component>
@@ -152,6 +152,11 @@
             <path>
               <item name="request-the-word" type="b2602c69:ProjectViewProjectNode" />
               <item name="request-the-word" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="request-the-word" type="b2602c69:ProjectViewProjectNode" />
+              <item name="request-the-word" type="462c0819:PsiDirectoryNode" />
+              <item name="ui" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -241,7 +246,21 @@
       <option name="project" value="LOCAL" />
       <updated>1535573507648</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Try to make Heroku build the js bundle, 2">
+      <created>1535573791401</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1535573791401</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Try to make Heroku build the js bundle, 3">
+      <created>1535573900532</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1535573900532</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -252,10 +271,10 @@
       <window_info anchor="bottom" id="Event Log" sideWeight="0.5006418" side_tool="true" visible="true" weight="0.32947233" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info active="true" anchor="bottom" id="Version Control" sideWeight="0.49935815" visible="true" weight="0.32947233" />
+      <window_info anchor="bottom" id="Version Control" sideWeight="0.49935815" visible="true" weight="0.32947233" />
       <window_info anchor="bottom" id="Python Console" sideWeight="0.49935815" weight="0.32947233" />
       <window_info anchor="bottom" id="Terminal" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24967907" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24967907" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="right" id="Database" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -323,7 +342,9 @@
     <MESSAGE value="Fix socket-io client dep. Make server serve built UI." />
     <MESSAGE value="Rebuild UI" />
     <MESSAGE value="Try to make Heroku build the js bundle" />
-    <option name="LAST_COMMIT_MESSAGE" value="Try to make Heroku build the js bundle" />
+    <MESSAGE value="Try to make Heroku build the js bundle, 2" />
+    <MESSAGE value="Try to make Heroku build the js bundle, 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Try to make Heroku build the js bundle, 3" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/server.py">
@@ -446,13 +467,6 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="2" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
@@ -465,8 +479,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
+        <state relative-caret-position="120">
+          <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
