@@ -2,7 +2,10 @@
   "name": "reqword-python-react",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "npm": "6.4.x"
+  },
   "scripts": {
-    "heroku-postinstall": "cd ui && NODE_ENV=prod npm run build"
+    "heroku-postbuild": "cd ui && NODE_ENV=prod npm run build"
   }
 }
