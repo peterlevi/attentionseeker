@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
 import io from 'socket.io-client';
+import * as R from 'ramda';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
+      input_value: '',
       echo: '',
     }
   }
@@ -19,15 +20,27 @@ class App extends Component {
     this.socket = io.connect(protocol + '://' + document.domain + ':' + port, {
       transports: ['websocket'],
     });
-    this.socket.on('echo', this.onEcho);
+    this.socket.on('full_state', this.onFullState);
+    this.socket.on('merge_state', this.onMergeState);
   }
 
-  onEcho = (data) => {
-    this.setState({echo: data.echo});
+  onFullState = full_state => {
+    console.log('full_state', full_state);
+    this.setState({
+      ...full_state,
+      input_value: full_state.echo,
+    });
+  };
+
+  onMergeState = patch => {
+    console.log('merge_state', patch);
+    this.setState(R.mergeDeepRight(this.state, patch));
   };
 
   send = () => {
-    this.socket.emit('send_message', {message: this.state.value});
+    const merge_state = { echo: this.state.input_value };
+    console.log('Sending: ', merge_state);
+    this.socket.emit('merge_state', merge_state);
   };
 
   render() {
@@ -39,8 +52,8 @@ class App extends Component {
               cols={80}
               rows={5}
               placeholder="Send a message to the server..."
-              value={this.state.value}
-              onChange={e => this.setState({value: e.target.value})}
+              value={this.state.input_value}
+              onChange={e => this.setState({ input_value: e.target.value })}
             />
             <br/>
             <button type="button" onClick={this.send}>Send</button>
