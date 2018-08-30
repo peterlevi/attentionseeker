@@ -1,57 +1,64 @@
 import React, { Component } from "react";
+import { Route, BrowserRouter, Link, withRouter } from "react-router-dom";
 import { Store, Consumer } from "./Store";
+import * as R from "ramda";
+
 import "./App.css";
 
-class App extends Component {
+class Lobby extends Component {
+  state = {
+    roomInput: ""
+  };
+
+  render() {
+    return (
+      <Consumer>
+        {({ state }) => (
+          <div className="Lobby">
+            <div>Join new room:</div>
+            <input
+              value={this.state.roomInput}
+              onChange={e =>
+                this.setState({
+                  roomInput: e.target.value.replace(/[^\d\w_\-]+/g, "")
+                })
+              }
+              onKeyPress={e => {
+                if (e.key === "Enter") {
+                  this.props.history.push(`/${this.state.roomInput}`);
+                  e.preventDefault();
+                }
+              }}
+            />
+            <div className="Rooms">
+              {Object.values(state.remote.rooms).map(room => (
+                <Link to={`/${room.name}`}>{room.name}</Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </Consumer>
+    );
+  }
+}
+
+export class App extends Component {
   render() {
     return (
       <Store
         initialState={{
           local: {
-            input_value: ""
+            room: null
           },
           remote: {
-            echo: ""
+            rooms: {}
           }
         }}
-        hydrateLocalFromRemote={({ echo }) => ({ input_value: echo })}
       >
-        <Consumer>
-          {({ state, locally, remotely }) => (
-            <div>
-              <div className="input">
-                <form>
-                  <textarea
-                    cols={80}
-                    rows={5}
-                    placeholder="Send a message to the server..."
-                    value={state.local.input_value}
-                    onChange={e =>
-                      locally({
-                        input_value: e.target.value
-                      })
-                    }
-                  />
-                  <br />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      remotely({
-                        echo: state.local.input_value
-                      })
-                    }
-                  >
-                    Send
-                  </button>
-                </form>
-              </div>
-              <pre id="response">{state.remote.echo}</pre>
-            </div>
-          )}
-        </Consumer>
+        <BrowserRouter>
+          <Route exact path="/" component={withRouter(Lobby)} />
+        </BrowserRouter>
       </Store>
     );
   }
 }
-
-export default App;

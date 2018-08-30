@@ -35,13 +35,13 @@ export class Store extends Component {
     this.socket.on("merge_patch", this.onMergePatch);
   };
 
-  onFullState = full_state => {
-    console.log("full_state", full_state);
-    const newState = {
-      remote: full_state
-    };
+  onFullState = remote_state => {
+    console.log("full_state", remote_state);
+    const actual =
+      Object.keys(remote_state).length !== 0 ? remote_state : this.state.remote;
+    const newState = { remote: actual };
     if (this.props.hydrateLocalFromRemote) {
-      newState.local = this.props.hydrateLocalFromRemote(full_state);
+      newState.local = this.props.hydrateLocalFromRemote(actual);
     }
     this.setState(newState);
   };

@@ -42,6 +42,7 @@ def save():
         f.flush()
         os.fsync(f.fileno())
     os.replace('snapshot.tmp.json', 'snapshot.json')
+    logging.info('Saved snapshot')
 
 
 @app.route('/', defaults={'path': ''})
