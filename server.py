@@ -64,9 +64,9 @@ def on_connect():
     emit('full_state', state)
 
 
-@socketio.on('merge_state')
-def on_merge_state(patch):
-    logging.info('on_merge_state: %s', json.dumps(patch))
+@socketio.on('merge_patch')
+def on_merge_patch(patch):
+    logging.info('on_merge_patch: %s', json.dumps(patch))
 
     # merge and persist state
     global state
@@ -74,7 +74,7 @@ def on_merge_state(patch):
     save()
 
     # broadcast the patch to all connected clients
-    socketio.emit('merge_state', patch)
+    socketio.emit('merge_patch', patch)
 
 
 if __name__ == "__main__":
