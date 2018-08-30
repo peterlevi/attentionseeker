@@ -17,7 +17,7 @@ class App extends Component {
         hydrateLocalFromRemote={({ echo }) => ({ input_value: echo })}
       >
         <Consumer>
-          {({ state, applyLocalPatch, applyRemotePatch }) => (
+          {({ state, locally, remotely }) => (
             <div>
               <div className="input">
                 <form>
@@ -27,7 +27,7 @@ class App extends Component {
                     placeholder="Send a message to the server..."
                     value={state.local.input_value}
                     onChange={e =>
-                      applyLocalPatch({
+                      locally({
                         input_value: e.target.value
                       })
                     }
@@ -36,7 +36,7 @@ class App extends Component {
                   <button
                     type="button"
                     onClick={() =>
-                      applyRemotePatch({
+                      remotely({
                         echo: state.local.input_value
                       })
                     }

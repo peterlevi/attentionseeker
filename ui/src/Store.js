@@ -48,12 +48,24 @@ export class Store extends Component {
 
   onMergePatch = patch => {
     console.log("Merging remote patch: ", patch);
+
+    const newRemote = R.mergeDeepRight(this.state.remote, patch);
+    const newState = { remote: newRemote };
+    if (this.props.updateLocalFromRemote) {
+      newState.local = this.props.updateLocalFromRemote(newRemote);
+    }
+
+    this.setState(newState);
+  };
+
+  locally = patch => {
+    console.log("Applying local patch: ", patch);
     this.setState({
-      remote: R.mergeDeepRight(this.state.remote, patch)
+      local: R.mergeDeepRight(this.state.local, patch)
     });
   };
 
-  applyRemotePatch = patch => {
+  remotely = patch => {
     // optimistically update our own remote state
     this.setState({
       remote: R.mergeDeepRight(this.state.remote, patch)
@@ -64,20 +76,13 @@ export class Store extends Component {
     this.socket.emit("merge_patch", patch);
   };
 
-  applyLocalPatch = patch => {
-    console.log("Applying local patch: ", patch);
-    this.setState({
-      local: R.mergeDeepRight(this.state.local, patch)
-    });
-  };
-
   render() {
     return (
       <Provider
         value={{
           state: this.state,
-          applyLocalPatch: this.applyLocalPatch,
-          applyRemotePatch: this.applyRemotePatch
+          locally: this.locally,
+          remotely: this.remotely
         }}
       >
         {this.props.children}
