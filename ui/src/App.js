@@ -7,8 +7,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input_value: '',
-      echo: '',
+      local: {
+        input_value: '',
+      },
+      remote: {
+        echo: '',
+      }
     }
   }
 
@@ -27,18 +31,22 @@ class App extends Component {
   onFullState = full_state => {
     console.log('full_state', full_state);
     this.setState({
-      ...full_state,
-      input_value: full_state.echo,
+      remote: full_state,
+      local: {
+        input_value: full_state.echo,
+      }
     });
   };
 
   onMergeState = patch => {
     console.log('merge_state', patch);
-    this.setState(R.mergeDeepRight(this.state, patch));
+    this.setState({
+      remote: R.mergeDeepRight(this.state.remote, patch)
+    });
   };
 
   send = () => {
-    const merge_state = { echo: this.state.input_value };
+    const merge_state = { echo: this.state.local.input_value };
     console.log('Sending: ', merge_state);
     this.socket.emit('merge_state', merge_state);
   };
@@ -52,15 +60,19 @@ class App extends Component {
               cols={80}
               rows={5}
               placeholder="Send a message to the server..."
-              value={this.state.input_value}
-              onChange={e => this.setState({ input_value: e.target.value })}
+              value={this.state.local.input_value}
+              onChange={e => this.setState({
+                local: {
+                  input_value: e.target.value
+                }
+              })}
             />
             <br/>
             <button type="button" onClick={this.send}>Send</button>
           </form>
         </div>
         <pre id="response">
-          {this.state.echo}
+          {this.state.remote.echo}
         </pre>
       </div>
     );
