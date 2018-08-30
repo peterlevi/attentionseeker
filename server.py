@@ -34,16 +34,14 @@ def load():
 def save():
     """
     Dump as json to a temporary file, flush, then replace the snapshot
-    (this is an atomic OS operation)
+    with the dumped temp file (replace is an atomic OS operation)
     """
     global state
-    fd, path = tempfile.mkstemp()
-    f = os.fdopen(fd, mode='w')
-    json.dump(state, f, ensure_ascii=True, indent=2)
-    f.flush()
-    os.fsync(fd)
-    f.close()
-    os.replace(path, 'snapshot.json')
+    with open('snapshot.tmp.json', 'w') as f:
+        json.dump(state, f, ensure_ascii=True, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace('snapshot.tmp.json', 'snapshot.json')
 
 
 @app.route('/', defaults={'path': ''})
