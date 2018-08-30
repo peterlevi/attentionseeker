@@ -39,16 +39,31 @@ class App extends Component {
   };
 
   onMergeState = patch => {
-    console.log('merge_state', patch);
+    console.log('Merging remote patch: ', patch);
     this.setState({
       remote: R.mergeDeepRight(this.state.remote, patch)
     });
   };
 
-  send = () => {
-    const merge_state = { echo: this.state.local.input_value };
-    console.log('Sending: ', merge_state);
-    this.socket.emit('merge_state', merge_state);
+  applyRemotePatch = (patch) => {
+    this.setState({
+      remote: R.mergeDeepRight(this.state.remote, patch)
+    });
+    console.log('Sending remote patch: ', patch);
+    this.socket.emit('merge_state', patch);
+  };
+
+  applyLocalPatch = (patch) => {
+    console.log('Applying local patch: ', patch);
+    this.setState({
+      local: R.mergeDeepRight(this.state.local, patch)
+    });
+  };
+
+  onSend = () => {
+    this.applyRemotePatch({
+      echo: this.state.local.input_value
+    });
   };
 
   render() {
@@ -61,14 +76,12 @@ class App extends Component {
               rows={5}
               placeholder="Send a message to the server..."
               value={this.state.local.input_value}
-              onChange={e => this.setState({
-                local: {
-                  input_value: e.target.value
-                }
+              onChange={e => this.applyLocalPatch({
+                input_value: e.target.value
               })}
             />
             <br/>
-            <button type="button" onClick={this.send}>Send</button>
+            <button type="button" onClick={this.onSend}>Send</button>
           </form>
         </div>
         <pre id="response">
