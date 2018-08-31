@@ -12,9 +12,17 @@ export class Store extends Component {
     super(props);
 
     this.state = {
+      connection: {
+        connected: false,
+        dataLoaded: false,
+        sid: null
+      },
       local: (props.initialState || {}).local || {},
       remote: (props.initialState || {}).remote || {}
     };
+
+    // expose globally for debugging
+    window.store = this;
 
     this.initSocket();
   }
@@ -25,13 +33,26 @@ export class Store extends Component {
       !process.env.NODE_ENV || process.env.NODE_ENV === "development"
         ? 3001
         : window.location.port;
-    this.socket = io.connect(
-      protocol + "://" + document.domain + ":" + port,
-      {
-        transports: ["websocket"]
-      }
-    );
+
+    this.socket = io.connect(protocol + "://" + document.domain + ":" + port, {
+      transports: ["websocket"]
+    });
+
+    this.socket.on("connect", () => {
+      console.log("connected");
+      this.updateConnection({
+        connected: true,
+        sid: this.socket.io.engine.id
+      });
+    });
+
+    this.socket.on("disconnect", () => {
+      console.log("disconnected");
+      this.updateConnection({ connected: false });
+    });
+
     this.socket.on("full_state", this.onFullState);
+
     this.socket.on("merge_patch", this.onMergePatch);
   };
 
@@ -39,11 +60,14 @@ export class Store extends Component {
     console.log("full_state", remote_state);
     const actual =
       Object.keys(remote_state).length !== 0 ? remote_state : this.state.remote;
-    const newState = { remote: actual };
+    const newState = {
+      remote: actual
+    };
     if (this.props.hydrateLocalFromRemote) {
       newState.local = this.props.hydrateLocalFromRemote(actual);
     }
     this.setState(newState);
+    this.updateConnection({ dataLoaded: true });
   };
 
   onMergePatch = patch => {
@@ -56,6 +80,13 @@ export class Store extends Component {
     }
 
     this.setState(newState);
+  };
+
+  updateConnection = patch => {
+    console.log("Updating connection info: ", patch);
+    this.setState({
+      connection: R.mergeDeepRight(this.state.connection, patch)
+    });
   };
 
   locally = patch => {
@@ -85,8 +116,28 @@ export class Store extends Component {
           remotely: this.remotely
         }}
       >
-        {this.props.children}
+        {this.state.connection.dataLoaded
+          ? this.props.children
+          : this.props.loadingComponent || <div />}
       </Provider>
     );
   }
+}
+
+export function withState(Component) {
+  return function StatefulComponent(props) {
+    // renders the wrapped component as a Consumer
+    return (
+      <Consumer>
+        {({ state, locally, remotely }) => (
+          <Component
+            {...props}
+            state={state}
+            locally={locally}
+            remotely={remotely}
+          />
+        )}
+      </Consumer>
+    );
+  };
 }
