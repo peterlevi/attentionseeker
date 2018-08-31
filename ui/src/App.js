@@ -11,6 +11,8 @@ import { Store, withState } from "./Store";
 
 import "./App.css";
 
+const COLORS = ["red", "green", "blue", "yellow"];
+
 export class App extends Component {
   render() {
     return (
@@ -114,6 +116,24 @@ class Room extends Component {
     });
   }
 
+  toggleColor(room, color) {
+    const current = (room.colors || {})[color];
+    const { remotely } = this.props;
+
+    remotely({
+      rooms: {
+        [room.name]: {
+          colors: {
+            [color]: {
+              color,
+              active: !current || !current.active
+            }
+          }
+        }
+      }
+    });
+  }
+
   render() {
     const { state, match } = this.props;
     const name = match.params.roomName;
@@ -121,6 +141,8 @@ class Room extends Component {
     if (!room) {
       return <div>Please wait...</div>;
     }
+
+    const roomColors = Object.values(room.colors || {}).filter(c => c.active);
 
     return (
       <div className="Room" style={{ padding: 20 }}>
@@ -134,13 +156,50 @@ class Room extends Component {
         <div style={{ display: "none" }}>
           Users here:
           {Object.values(room.users)
-            .filter(u => u.active)
+            .filter(u => u.sid && u.active)
             .map(u => <span key={u.sid}>{u.sid}&nbsp;</span>)}
         </div>
+
+        {roomColors.map(c => (
+          <div
+            key={c.color}
+            style={{
+              margin: 10,
+              width: roomColors.length < 2 ? "80vh" : "100px",
+              height: roomColors.length < 2 ? "80vh" : "100px",
+              borderRadius: "100%",
+              backgroundColor: c.color
+            }}
+          />
+        ))}
+
+        {COLORS.map(color => (
+          <Color
+            key={color}
+            color={color}
+            active={roomColors.map(c => c.color).includes(color)}
+            onClick={() => this.toggleColor(room, color)}
+          />
+        ))}
       </div>
     );
   }
 }
+
+const Color = ({ color, active, onClick }) => (
+  <span
+    style={{
+      display: "inline-block",
+      backgroundColor: color,
+      cursor: "pointer",
+      width: 50,
+      height: 50,
+      marginRight: 20,
+      border: !active ? "none" : "solid 5px black"
+    }}
+    onClick={onClick}
+  />
+);
 
 const ConnectionIndicator = ({ connected }) => (
   <div
