@@ -7,11 +7,12 @@ import {
   withRouter
 } from "react-router-dom";
 import { Store, withState } from "./Store";
-// import * as R from "ramda";
+import * as R from "ramda";
 
+import "./Bar.css";
 import "./App.css";
 
-const COLORS = ["red", "green", "blue", "yellow"];
+const COLORS = ["red", "orange", "yellow", "green", "blue"];
 
 export class App extends Component {
   render() {
@@ -88,8 +89,8 @@ class Room extends Component {
         [name]: {
           name: name,
           users: {
-            [state.local.sid]: {
-              sid: state.local.sid,
+            [state.connection.sid]: {
+              sid: state.connection.sid,
               joined: Date.now(),
               active: true
             }
@@ -134,6 +135,17 @@ class Room extends Component {
     });
   }
 
+  clearAll(room) {
+    const { remotely } = this.props;
+    const colors = R.map(c => ({ ...c, active: false }), room.colors || {});
+
+    remotely({
+      rooms: {
+        [room.name]: { colors }
+      }
+    });
+  }
+
   render() {
     const { state, match } = this.props;
     const name = match.params.roomName;
@@ -142,45 +154,103 @@ class Room extends Component {
       return <div>Please wait...</div>;
     }
 
-    const roomColors = Object.values(room.colors || {}).filter(c => c.active);
+    const roomColors = R.sortBy(c => COLORS.indexOf(c.color))(
+      Object.values(room.colors || {}).filter(c => c.active)
+    );
 
     return (
-      <div className="Room" style={{ padding: 20 }}>
-        <div>
-          #{room.name}
-          <div style={{ float: "right" }}>
-            <Link to={"/"}>Lobby</Link>
+      <div
+        className="Room"
+        style={{ display: "flex", flexDirection: "column" }}
+      >
+        <div
+          className="Header Bar"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 40,
+            padding: "0 20px",
+            backgroundColor: "#eee",
+            textAlign: "center"
+          }}
+        >
+          <span className="RoomName Center">#{room.name}</span>
+
+          <Link to="/" style={{ marginRight: 20 }} className="Left">
+            Back to Lobby
+          </Link>
+
+          <span className="Right">
             <ConnectionIndicator connected={state.connection.connected} />
+          </span>
+        </div>
+
+        <div className="Content" style={{ padding: 20, marginTop: 40 }}>
+          <div>
+            Joined users:&nbsp;{
+              Object.values(room.users).filter(u => u.sid && u.active).length
+            }
+          </div>
+
+          <div style={{ marginTop: 20, marginBottom: 20 }}>
+            {COLORS.map(color => (
+              <Color
+                key={color}
+                color={color}
+                active={roomColors.map(c => c.color).includes(color)}
+                onClick={() => this.toggleColor(room, color)}
+              />
+            ))}
+
+            <a
+              href="#clear-all"
+              onClick={e => {
+                e.preventDefault();
+                this.clearAll(room);
+              }}
+            >
+              Clear all
+            </a>
+          </div>
+
+          <div style={{ flex: "auto" }}>
+            {roomColors.length >= 2 &&
+              roomColors.map(c => (
+                <span
+                  key={c.color}
+                  style={{
+                    margin: 10,
+                    width: 250,
+                    height: 250,
+                    display: "inline-block",
+                    borderRadius: "100%",
+                    backgroundColor: c.color,
+                    cursor: "pointer"
+                  }}
+                  onClick={() => this.toggleColor(room, c.color)}
+                />
+              ))}
+
+            {roomColors.length === 1 &&
+              roomColors.map(c => (
+                <span
+                  key={c.color}
+                  style={{
+                    margin: 10,
+                    width: "80vh",
+                    height: "80vh",
+                    display: "inline-block",
+                    borderRadius: "100%",
+                    backgroundColor: c.color,
+                    cursor: "pointer"
+                  }}
+                  onClick={() => this.toggleColor(room, c.color)}
+                />
+              ))}
           </div>
         </div>
-        <div style={{ display: "none" }}>
-          Users here:
-          {Object.values(room.users)
-            .filter(u => u.sid && u.active)
-            .map(u => <span key={u.sid}>{u.sid}&nbsp;</span>)}
-        </div>
-
-        {roomColors.map(c => (
-          <div
-            key={c.color}
-            style={{
-              margin: 10,
-              width: roomColors.length < 2 ? "80vh" : "100px",
-              height: roomColors.length < 2 ? "80vh" : "100px",
-              borderRadius: "100%",
-              backgroundColor: c.color
-            }}
-          />
-        ))}
-
-        {COLORS.map(color => (
-          <Color
-            key={color}
-            color={color}
-            active={roomColors.map(c => c.color).includes(color)}
-            onClick={() => this.toggleColor(room, color)}
-          />
-        ))}
       </div>
     );
   }
@@ -195,19 +265,17 @@ const Color = ({ color, active, onClick }) => (
       width: 50,
       height: 50,
       marginRight: 20,
-      border: !active ? "none" : "solid 5px black"
+      outline: !active ? "none" : "solid 5px black"
     }}
     onClick={onClick}
   />
 );
 
 const ConnectionIndicator = ({ connected }) => (
-  <div
+  <span
     className="ConnectionIndicator"
     style={{
-      position: "absolute",
-      top: 5,
-      right: 5,
+      display: "inline-block",
       width: 10,
       height: 10,
       backgroundColor: connected ? "green" : "red",

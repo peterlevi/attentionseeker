@@ -1,0 +1,42 @@
+/*
+ * Flex-based horizontal bar with ability to place any number of items left, right or centered.
+ * Items are vertically centered by default, but you can override with .AlignTop or .AlignBottom
+ */
+
+.Bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Bar .Left {
+  order: 0;
+  flex: none;
+  margin-right: 20px;
+}
+
+.Bar::after {
+  display: block;
+  content: '';
+  flex: 1 0 auto;
+  order: 1;
+}
+
+.Bar .Center {
+  order: 1;
+  flex-grow: 10000;
+  text-align: center;
+}
+
+.Bar .Right {
+  order: 2;
+  flex: none;
+}
+
+.Bar .AlignTop {
+  align-self: flex-start;
+}
+
+.Bar .AlignBottom {
+  align-self: flex-end;
+}

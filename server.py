@@ -1,8 +1,7 @@
 import os
 import json
-import tempfile
 import logging
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, jsonify
 from flask_socketio import SocketIO, emit
 from deepmerge import always_merger
 
@@ -54,6 +53,12 @@ def index(path):
 @app.route('/static/<path:path>')
 def serve_static(path):
     return send_from_directory('ui/build/static', path)
+
+
+@app.route('/api/state')
+def api_state():
+    global state
+    return jsonify(state)
 
 
 @socketio.on('connect')
